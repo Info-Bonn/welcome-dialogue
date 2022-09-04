@@ -60,7 +60,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'discord-bot=discord_bot:main',
+            'welcome-dialogue=discord_bot:main',
         ],
     },
 )
