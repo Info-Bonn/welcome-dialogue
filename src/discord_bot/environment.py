@@ -97,9 +97,11 @@ OWNER_ID = int(load_env("OWNER_ID", "100000000000000000", config_dict=cfg_dict))
 ACTIVITY_NAME = load_env("ACTIVITY_NAME", f"{PREFIX}help", config_dict=cfg_dict)  # activity bot plays
 
 # roles to give on verification
-_ROLES = os.getenv('ROLES', "760434164146634752 880220270210740235")
+_ROLES = os.getenv('ROLES', "760434164146634752")
 GUILD = int(load_env("GUILD", "760421261649248296"))  # guild the bot is configured for
-START_CHANNEL = int(load_env("START_CHANNEL", "877208002762002465"))  # channel to point members to after verification
+START_CHANNEL = int(load_env("START_CHANNEL", "760429072156459019"))  # channel to point members to after verification
+ONBOARDING_CHANNEL = int(load_env("ONBOARDING_CHANNEL", "1015975768045670501"))  # channel for interaction button
+ONBOARDING_ROLE = int(load_env("ONBOARDING_ROLE", "1015975563250372698"))  # member has this only during onboarding
 # date after which members need to be joined so that the bot will capture their not pending but role-less existence
 _NOT_BEFORE = load_env("NOT_BEFORE", "25.08.2021")
 NOT_BEFORE = datetime.strptime(_NOT_BEFORE, "%d.%m.%Y")
