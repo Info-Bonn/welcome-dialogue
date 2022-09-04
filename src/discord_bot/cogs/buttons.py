@@ -5,11 +5,12 @@ from discord.ext import commands
 
 from ..environment import GUILD, ROLES, ONBOARDING_ROLE, START_CHANNEL
 
+
 """
 Used to start a new dialogue on the server
 """
 
-class EntryPointButton(discord.ui.Button["Onboarding"]):
+class EntryPointButton(discord.ui.Button):
     def __init__(self, bot: commands.Bot, label: str):
         super().__init__()
         self.bot = bot
@@ -32,7 +33,7 @@ Used for the actual onboarding
 """
 
 
-class SelectionButton(discord.ui.Button["Onboarding"]):
+class SelectionButton(discord.ui.Button):
     """ Button representing one role that can be selected """
 
     def __init__(self, label: str, role_id: int):
@@ -55,7 +56,7 @@ class SelectionButton(discord.ui.Button["Onboarding"]):
         await interaction.response.edit_message(view=self.view)
 
 
-class CommitButton(discord.ui.Button["Onboarding"]):
+class CommitButton(discord.ui.Button):
     """ Button used to call the function that gives the roles """
     def __init__(self, label: str, default_roles: list[int] = None):
         super().__init__()
