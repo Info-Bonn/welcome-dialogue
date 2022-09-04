@@ -114,4 +114,7 @@ if not _ROLES:
     logger.error(error)
     raise KeyError(error)
 
-ROLES = [int(role.strip()) for role in _ROLES.split(' ')]
+if " " in _ROLES:
+    ROLES = [int(role.strip()) for role in _ROLES.split(' ')]
+else:
+    ROLES = [int(_ROLES)]
