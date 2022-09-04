@@ -2,8 +2,10 @@ import discord
 from discord.ext import commands
 from discord.ext import tasks
 
-from ..environment import ROLES, START_CHANNEL, GUILD, NOT_BEFORE, CHECK_PERIOD
+from ..environment import ROLES, START_CHANNEL, GUILD, NOT_BEFORE, CHECK_PERIOD, ONBOARDING_CHANNEL, ONBOARDING_ROLE
 from ..log_setup import logger
+
+from .buttons import OnboardingButtons, EntryPointView
 
 
 class VerificationListener(commands.Cog):
@@ -18,6 +20,19 @@ class VerificationListener(commands.Cog):
         print(self.guild)
         self.roles = [self.guild.get_role(role) for role in ROLES]
         self.walk_members.start()  # start backup task
+        self.onboarding_channel = self.guild.get_channel(ONBOARDING_CHANNEL)
+        self.onboarding_role = self.guild.get_role(ONBOARDING_ROLE)
+        print(ONBOARDING_CHANNEL)
+        print(self.onboarding_channel)
+
+    async def cog_load(self):
+        """
+        Sends a new start button every time, to ensure that the current button is functional
+        """
+        await self.onboarding_channel.purge()
+        await self.onboarding_channel.send("Klick auf den Button und wähle die Optionen, die auf dich zutreffen.\n"
+                                           "Bei Problemen wende dich bitte an die Serverleitung :)",
+                                           view=EntryPointView(self.bot, "Freischalten"))
 
     @commands.Cog.listener()
     async def on_member_update(self, before_member: discord.Member, after_member: discord.Member):
@@ -27,9 +42,18 @@ class VerificationListener(commands.Cog):
             return
 
         if before_member.pending and not after_member.pending:
-            await after_member.add_roles(*self.roles)
 
             await after_member.send(self.get_welcome_text(after_member))
+
+            # send message containing the selection buttons - this is a new message on purpose
+            # we can edit this message without losing the greeting text
+            await after_member.send("Bitte wähle hier aus, was auf dich zutrifft.\n"
+                                    "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
+                                    view=OnboardingButtons(self.bot))
+
+            # set member in onboarding mode
+            # allow only to see the onboarding channel where users are confronted with buttons
+            await after_member.add_roles(self.onboarding_role)
 
     @tasks.loop(minutes=CHECK_PERIOD)
     async def walk_members(self):
@@ -40,9 +64,15 @@ class VerificationListener(commands.Cog):
             # check amount of roles,
             # if member is not pending
             # if he joined after a specific date to not verify old members
-            if len(member.roles) == 1 and not member.pending and member.joined_at > NOT_BEFORE:
-                await member.add_roles(*self.roles)
+            if len(member.roles) == 1 and not member.pending and member.joined_at.replace(tzinfo=None) > NOT_BEFORE:
+                # set user in onboarding mode
+                await member.add_roles(self.onboarding_role)
+                # also send welcome and
                 await member.send(self.get_welcome_text(member))
+                # also sending the buttons
+                await member.send("Bitte wähle hier aus, was auf dich zutrifft.\n"
+                                  "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
+                                  view=OnboardingButtons(self.bot))
                 i += 1
 
         if i > 0:
