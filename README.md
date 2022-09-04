@@ -34,7 +34,7 @@ This will only be an issue if your bot reaches more than 100 servers, then you'v
 
 #### Optional env variables
 | parameter |  description |
-| ------ |  ------ |  ------ | 
+| ------ |  ------ |  
 | `export ROLES="760434164146634752"`  | Roles to give after verification, separated by a space |
 | `export GUILD="760421261649248296"`  | Guild the bot shall be set up for |
 | `export START_CHANNEL="760429072156459019"`  | Channel the bot mentions in welcome message |
