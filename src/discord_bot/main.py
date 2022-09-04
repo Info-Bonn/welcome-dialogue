@@ -30,11 +30,10 @@ class MyBot(commands.Bot):
         """ Initialize bot with intents and init super """
         super().__init__(command_prefix=self._prefix_callable, intents=intents)
 
-    async def setup_hook(self):
+    # login message
+    async def on_ready(self):
         """!
-        A coroutine to be called to setup the bot, by default this is blank.
-        This performs an asynchronous setup after the bot is logged in,
-        but before it has connected to the Websocket (quoted from d.py docs)
+        Function called when the bot is ready. Emits the '[Bot] has connected' message
         """
 
         # LOADING Extensions
@@ -43,17 +42,12 @@ class MyBot(commands.Bot):
         # TODO: Register your extensions here
         initial_extensions = [
             '.cogs.misc',
-            '.cogs.help'
+            '.cogs.help',
+            '.cogs.verification_listener'
         ]
 
         for extension in initial_extensions:
             await bot.load_extension(extension, package=__package__)
-
-    # login message
-    async def on_ready(self):
-        """!
-        Function called when the bot is ready. Emits the '[Bot] has connected' message
-        """
 
         # Walk all guilds, report connected guilds and push commands to guilds
         member_count = 0
