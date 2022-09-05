@@ -22,8 +22,8 @@ class EntryPointButton(discord.ui.Button["Onboarding"]):
 
 
 class EntryPointView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, label: str):
-        super().__init__()
+    def __init__(self, bot: commands.Bot, label: str, timeout=None):
+        super().__init__(timeout=timeout)
 
         self.add_item(EntryPointButton(bot, label))
 
@@ -73,8 +73,8 @@ class CommitButton(discord.ui.Button["Onboarding"]):
 class OnboardingButtons(discord.ui.View):
     """ The view that contains the selection buttons as well as the commit button """
 
-    def __init__(self, bot: commands.Bot):
-        super().__init__()
+    def __init__(self, bot: commands.Bot, timeout=None):
+        super().__init__(timeout=timeout)
 
         self.bot = bot
         self.buttons: list[Union[SelectionButton, CommitButton]] = []
