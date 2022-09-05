@@ -58,6 +58,7 @@ class VerificationListener(commands.Cog):
         """ Walk all members every five minutes to fix errors that may occur due to downtimes or other errors """
         logger.info("Executing member check")
         i = 0
+        j = 0
         async for member in self.guild.fetch_members():
             # check amount of roles,
             # if member is not pending
@@ -80,15 +81,20 @@ class VerificationListener(commands.Cog):
                 async for message in private_chat.history(limit=20):
                     interaction = message.interaction
                     if interaction and interaction.is_expired():
+                        logger.info(f"Sent new interaction message to {member.id}")
                         await member.send(
                             "Bitte wähle hier aus, was auf dich zutrifft.\n"
                             "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
                             view=OnboardingButtons(self.bot)
                         )
+                        j +=1
                         break
 
         if i > 0:
             logger.info(f"Verified {i} member that accepted the rules but didn't get the roles")
+
+        if j > 0:
+            logger.info(f"Sent {j} members new interaction message")
 
     def get_welcome_text(self, member: discord.Member):
         return (f"Hey {member.display_name}, willkommen auf dem _{self.guild.name}_ Discord!\n"
