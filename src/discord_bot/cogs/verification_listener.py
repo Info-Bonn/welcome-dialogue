@@ -78,17 +78,22 @@ class VerificationListener(commands.Cog):
             # member has onboarding and interaction is timed out
             if self.onboarding_role in member.roles:
                 private_chat = member.dm_channel
+                # no private chat yet, let's send the message
+                if private_chat is None:
+                    await self.send_onboarding_message(member)
+                    continue
 
+                # check if latest interaction is time out
                 async for message in private_chat.history(limit=20):
+                    # walk chat until we hit an interaction
                     interaction = message.interaction
-                    if interaction and interaction.is_expired():
-                        logger.info(f"Sent new interaction message to {member.id}")
-                        await member.send(
-                            "Bitte wähle hier aus, was auf dich zutrifft.\n"
-                            "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
-                            view=OnboardingButtons(self.bot)
-                        )
-                        j +=1
+                    if interaction:
+                        # if this interaction is expired we send a new one
+                        if interaction.is_expired():
+                            logger.info(f"Sent new interaction message to {member.id}")
+                            await self.send_onboarding_message(member)
+                            j +=1
+                        # we're done with that user as soon as we hit one interaction
                         break
 
         if i > 0:
