@@ -22,8 +22,6 @@ class VerificationListener(commands.Cog):
         self.walk_members.start()  # start backup task
         self.onboarding_channel = self.guild.get_channel(ONBOARDING_CHANNEL)
         self.onboarding_role = self.guild.get_role(ONBOARDING_ROLE)
-        print(ONBOARDING_CHANNEL)
-        print(self.onboarding_channel)
 
     async def cog_load(self):
         """
@@ -74,6 +72,20 @@ class VerificationListener(commands.Cog):
                                   "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
                                   view=OnboardingButtons(self.bot))
                 i += 1
+
+            # member has onboarding and interaction is timed out
+            if self.onboarding_role in member.roles:
+                private_chat = member.dm_channel
+
+                async for message in private_chat.history(limit=20):
+                    interaction = message.interaction
+                    if interaction and interaction.is_expired():
+                        await member.send(
+                            "Bitte wähle hier aus, was auf dich zutrifft.\n"
+                            "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
+                            view=OnboardingButtons(self.bot)
+                        )
+                        break
 
         if i > 0:
             logger.info(f"Verified {i} member that accepted the rules but didn't get the roles")
