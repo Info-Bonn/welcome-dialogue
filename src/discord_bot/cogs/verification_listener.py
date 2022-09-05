@@ -32,6 +32,11 @@ class VerificationListener(commands.Cog):
                                            "Bei Problemen wende dich bitte an die Serverleitung :)",
                                            view=EntryPointView(self.bot, "Freischalten"))
 
+    async def send_onboarding_message(self, member: discord.Member) -> discord.Message:
+        return await member.send("Bitte wähle hier aus, was auf dich zutrifft.\n"
+                                 "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
+                                  view=OnboardingButtons(self.bot))
+
     @commands.Cog.listener()
     async def on_member_update(self, before_member: discord.Member, after_member: discord.Member):
         """ Give member target roles if member accepts rules screen """
@@ -45,9 +50,7 @@ class VerificationListener(commands.Cog):
 
             # send message containing the selection buttons - this is a new message on purpose
             # we can edit this message without losing the greeting text
-            await after_member.send("Bitte wähle hier aus, was auf dich zutrifft.\n"
-                                    "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
-                                    view=OnboardingButtons(self.bot))
+            await self.send_onboarding_message(after_member)
 
             # set member in onboarding mode
             # allow only to see the onboarding channel where users are confronted with buttons
@@ -69,9 +72,7 @@ class VerificationListener(commands.Cog):
                 # also send welcome and
                 await member.send(self.get_welcome_text(member))
                 # also sending the buttons
-                await member.send("Bitte wähle hier aus, was auf dich zutrifft.\n"
-                                  "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
-                                  view=OnboardingButtons(self.bot))
+                await self.send_onboarding_message(member)
                 i += 1
 
             # member has onboarding and interaction is timed out
