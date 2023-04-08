@@ -17,6 +17,6 @@ WORKDIR /app
 
 COPY . /app
 
-RUN python3 -m pip install -e .
+RUN python3 -m pip install .
 
 CMD welcome-dialogue
