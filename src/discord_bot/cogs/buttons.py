@@ -102,18 +102,6 @@ class OnboardingButtons(discord.ui.View):
         guild = self.bot.get_guild(GUILD)
         member = guild.get_member(interaction.user.id)
 
-        # role that member only has during onboarding
-        onboarding_role = guild.get_role(ONBOARDING_ROLE)
-
-        # member used an interaction again, but onboarding as already finished (role is missing)
-        if onboarding_role not in member.roles:
-            await interaction.response.edit_message(
-                content="Du hast das setup bereits abgeschlossen.\n"
-                        "Es wurden keine Veränderungen vorgenommen.",
-                view=None  # remove buttons
-            )
-            return
-
         # member is not on guild
         if member is None:
             await interaction.response.edit_message(
@@ -127,31 +115,44 @@ class OnboardingButtons(discord.ui.View):
                  for button in self.buttons
                  if isinstance(button, SelectionButton) and button.style == discord.ButtonStyle.green]
 
-        # add default roles to the mix
-        if default_roles:
+        # add default roles to the mix and remove onboarding role if user is new
+        onboarding_role = guild.get_role(ONBOARDING_ROLE)  # role that member only has during onboarding
+        if default_roles and onboarding_role in member.roles:
             roles.extend(guild.get_role(role) for role in default_roles)
+            update_message = (f"Du bist nun freigeschaltet! - "
+                              f"Schau doch mal in {guild.get_channel(START_CHANNEL).mention} vorbei :)")
+            reason = "First time onboarding"
+            # remove onboarding
+            await member.remove_roles(onboarding_role, reason=reason)
+
+        # member was already here before
+        else:
+            update_message = f"Deine Rollen wurden aktualisiert. Viel Spaß weiterhin!"
+            reason = "Role Update via buttons"
+
+        available_roles = [guild.get_role(button.role_id)
+                           for button in self.buttons
+                           if isinstance(button, SelectionButton)]
+
+        selected_roles = [guild.get_role(button.role_id)
+                          for button in self.buttons
+                          if isinstance(button, SelectionButton) and button.style == discord.ButtonStyle.green]
 
         # add roles
-        await member.add_roles(*roles, reason="Onboarding dialogue")
-        # remove onboarding
-        await member.remove_roles(onboarding_role, reason="Onboarding finished")
+        # all roles from that menu the user has at the moment (roles not given trough that menu removed via intersect)
+        member_roles_set = set(member.roles).intersection(available_roles)
+        selected_roles_set = set(selected_roles)
+
+        # roles member selected but does not have yet
+        to_give = selected_roles_set.difference(member_roles_set)
+        await member.add_roles(*to_give, reason=reason)
+
+        # roles member has but does not want
+        to_remove = member_roles_set.difference(selected_roles_set)
+        await member.remove_roles(*to_remove, reason="Onboarding finished")
+
         # send message
         await interaction.response.send_message(
-            content=f"Du bist nun freigeschaltet! - "
-                    f"Schau doch mal in {guild.get_channel(START_CHANNEL).mention} vorbei :)",
+            content=update_message,
             ephemeral=True
         )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
