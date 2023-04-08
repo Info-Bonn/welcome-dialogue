@@ -2,8 +2,8 @@
 Our new onboarding-system, replacing [verification-listener](https://github.com/Info-Bonn/verification-listener).  
 
 Single-guild discord-bot to give roles to a member accepting your servers rules.  
-Also sending a neat little welcome message to the user as well as buttons to select basic roles.    
-The selection can also be done on a channel on the server. Where an entrypoint button is sent by the bot.  
+Also sending a neat little welcome message to the user as well as buttons to select basic roles, which can be changed afterwards.    
+The selection can also be done on a channel on the server. Where an entrypoint button is sent by the bot.
 
 The bot also runs a task all five minutes to ensure that no member is missed due to potential downtime or other errors.   
 It's possible to ignore members that joined before a specific date if the system shall not apply to older members.  
