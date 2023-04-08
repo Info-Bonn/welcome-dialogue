@@ -98,6 +98,7 @@ ACTIVITY_NAME = load_env("ACTIVITY_NAME", f"{PREFIX}help", config_dict=cfg_dict)
 
 # roles to give on verification
 _ROLES = os.getenv('ROLES', "760434164146634752")
+ROLE_OPTION_FILE = os.getenv("ROLE_OPTION_FILE", "data/role_buttons.json")
 GUILD = int(load_env("GUILD", "760421261649248296"))  # guild the bot is configured for
 START_CHANNEL = int(load_env("START_CHANNEL", "760429072156459019"))  # channel to point members to after verification
 ONBOARDING_CHANNEL = int(load_env("ONBOARDING_CHANNEL", "1015975768045670501"))  # channel for interaction button
@@ -118,3 +119,8 @@ if " " in _ROLES:
     ROLES = [int(role.strip()) for role in _ROLES.split(' ')]
 else:
     ROLES = [int(_ROLES)]
+
+if not os.path.isfile(ROLE_OPTION_FILE):
+    error = "ROLE_OPTION_FILE not found - The bot doesn't make any sense without that file!"
+    logger.error(error)
+    raise KeyError(error)

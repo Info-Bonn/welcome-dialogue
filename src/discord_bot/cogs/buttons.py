@@ -1,10 +1,10 @@
+import json
 from typing import Union
 
 import discord
 from discord.ext import commands
 
-from ..environment import GUILD, ROLES, ONBOARDING_ROLE, START_CHANNEL
-
+from ..environment import GUILD, ROLES, ONBOARDING_ROLE, START_CHANNEL, ROLE_OPTION_FILE
 
 """
 Used to start a new dialogue on the server
@@ -80,16 +80,14 @@ class OnboardingButtons(discord.ui.View):
         self.buttons: list[Union[SelectionButton, CommitButton]] = []
 
         # buttons will be generated from that
-        # TODO: put this into a dynamic json
-        roles_dict = {
-            "Ich bin Ersti": 1015979313029459998,
-            "Ich studiere Informatik": 760444146505875459,
-            "Ich studiere Cyber Security": 760444120769888278,
-            "Ich studiere auf Lehramt": 760444168971091968
-        }
+        with open(ROLE_OPTION_FILE, "r") as f:
+            button_option_dict: dict = json.load(f)
+            # we can assume that there is only one key since this bot is currently single server
+            guild_key = list(button_option_dict.keys())[0]  # TODO: come up with a better solution
+            self.button_option_dict = button_option_dict[guild_key]["role_buttons"]
 
         # generate buttons
-        for k, v in roles_dict.items():
+        for k, v in self.button_option_dict.items():
             button = SelectionButton(k, v)
             self.buttons.append(button)
             self.add_item(button)
