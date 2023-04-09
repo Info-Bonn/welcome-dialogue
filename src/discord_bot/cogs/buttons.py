@@ -2,9 +2,11 @@ import json
 from typing import Union
 
 import discord
+import discord.errors as discord_errors
 from discord.ext import commands
 
 from ..environment import GUILD, ROLES, ONBOARDING_ROLE, START_CHANNEL, ROLE_OPTION_FILE
+from ..log_setup import logger
 
 """
 Used to start a new dialogue on the server
@@ -131,7 +133,7 @@ class OnboardingButtons(discord.ui.View):
 
         # member was already here before
         else:
-            update_message = f"Deine Rollen wurden aktualisiert. Viel Spaß weiterhin!"
+            update_message = f"Deine Rollen wurden aktualisiert.\nViel Spaß weiterhin!"
             reason = "Role Update via buttons"
 
         # add roles
@@ -148,7 +150,13 @@ class OnboardingButtons(discord.ui.View):
         await member.remove_roles(*to_remove, reason="Onboarding finished")
 
         # send message
-        await interaction.response.send_message(
-            content=update_message,
-            ephemeral=True
-        )
+        try:
+            await interaction.response.send_message(
+                content=update_message,
+                ephemeral=True
+            )
+        except discord_errors.NotFound:
+            logger.info("Got not found exception, trying to send followup")
+            await interaction.followup.send(
+                content=update_message,
+                ephemeral=True)
