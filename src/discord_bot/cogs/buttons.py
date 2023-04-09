@@ -111,14 +111,18 @@ class OnboardingButtons(discord.ui.View):
             return
 
         # generate list of roles to give
-        roles = [guild.get_role(button.role_id)
-                 for button in self.buttons
-                 if isinstance(button, SelectionButton) and button.style == discord.ButtonStyle.green]
+        available_roles = [guild.get_role(button.role_id)
+                           for button in self.buttons
+                           if isinstance(button, SelectionButton)]
+
+        selected_roles = [guild.get_role(button.role_id)
+                          for button in self.buttons
+                          if isinstance(button, SelectionButton) and button.style == discord.ButtonStyle.green]
 
         # add default roles to the mix and remove onboarding role if user is new
         onboarding_role = guild.get_role(ONBOARDING_ROLE)  # role that member only has during onboarding
         if default_roles and onboarding_role in member.roles:
-            roles.extend(guild.get_role(role) for role in default_roles)
+            selected_roles.extend(guild.get_role(role) for role in default_roles)
             update_message = (f"Du bist nun freigeschaltet! - "
                               f"Schau doch mal in {guild.get_channel(START_CHANNEL).mention} vorbei :)")
             reason = "First time onboarding"
@@ -129,14 +133,6 @@ class OnboardingButtons(discord.ui.View):
         else:
             update_message = f"Deine Rollen wurden aktualisiert. Viel Spaß weiterhin!"
             reason = "Role Update via buttons"
-
-        available_roles = [guild.get_role(button.role_id)
-                           for button in self.buttons
-                           if isinstance(button, SelectionButton)]
-
-        selected_roles = [guild.get_role(button.role_id)
-                          for button in self.buttons
-                          if isinstance(button, SelectionButton) and button.style == discord.ButtonStyle.green]
 
         # add roles
         # all roles from that menu the user has at the moment (roles not given trough that menu removed via intersect)
