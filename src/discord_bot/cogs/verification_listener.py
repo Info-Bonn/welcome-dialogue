@@ -1,6 +1,9 @@
+from typing import Optional, Literal
+
 import discord
 from discord.ext import commands
 from discord.ext import tasks
+from discord import app_commands
 
 from ..environment import ROLES, START_CHANNEL, GUILD, NOT_BEFORE, CHECK_PERIOD, ONBOARDING_CHANNEL, ONBOARDING_ROLE
 from ..log_setup import logger
@@ -35,7 +38,20 @@ class VerificationListener(commands.Cog):
     async def send_onboarding_message(self, member: discord.Member) -> discord.Message:
         return await member.send("Bitte wähle hier aus, was auf dich zutrifft.\n"
                                  "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
-                                  view=OnboardingButtons(self.bot))
+                                 view=OnboardingButtons(self.bot))
+
+    @app_commands.command(name="update_base_roles", description="Update your base roles")
+    # @app_commands.guild_only
+    async def update_base_roles(self,
+                                interaction: discord.Interaction,
+                                mode: Optional[Literal["silent", "loud"]] = "silent"):
+        await interaction.response.send_message(
+            "Bitte wähle hier aus, was auf dich zutrifft.\n"
+            "Ignorier diese Nachricht, wenn du dies bereits auf dem Server gemacht hast :)",
+            view=OnboardingButtons(self.bot),
+            ephemeral=mode == "silent"
+        )
+
 
     @commands.Cog.listener()
     async def on_member_update(self, before_member: discord.Member, after_member: discord.Member):
@@ -45,7 +61,6 @@ class VerificationListener(commands.Cog):
             return
 
         if before_member.pending and not after_member.pending:
-
             await after_member.send(self.get_welcome_text(after_member))
 
             # send message containing the selection buttons - this is a new message on purpose
@@ -92,7 +107,7 @@ class VerificationListener(commands.Cog):
                         if interaction.is_expired():
                             logger.info(f"Sent new interaction message to {member.id}")
                             await self.send_onboarding_message(member)
-                            j +=1
+                            j += 1
                         # we're done with that user as soon as we hit one interaction
                         break
 
