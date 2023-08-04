@@ -112,6 +112,10 @@ class OnboardingButtons(discord.ui.View):
             )
             return
 
+        # we don't have much time to react to that interaction,
+        # so we better just acknowledge it straight ahead and send a followup when the roles are done
+        await interaction.response.defer(ephemeral=True, thinking=True)
+
         # generate list of roles to give
         available_roles = [guild.get_role(button.role_id)
                            for button in self.buttons
@@ -150,9 +154,9 @@ class OnboardingButtons(discord.ui.View):
         to_remove = member_roles_set.difference(selected_roles_set)
         await member.remove_roles(*to_remove, reason="Onboarding finished")
 
-        # send message
+        # send message that we're done
         try:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 content=update_message,
                 ephemeral=True
             )
