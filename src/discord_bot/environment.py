@@ -98,6 +98,7 @@ ACTIVITY_NAME = load_env("ACTIVITY_NAME", f"{PREFIX}help", config_dict=cfg_dict)
 
 # roles to give on verification
 _ROLES = os.getenv('ROLES', "760434164146634752")
+EXTRA_INFO = os.getenv("EXTRA_INFO", "")
 ROLE_OPTION_FILE = os.getenv("ROLE_OPTION_FILE", "data/role_buttons.json")
 GUILD = int(load_env("GUILD", "760421261649248296"))  # guild the bot is configured for
 START_CHANNEL = int(load_env("START_CHANNEL", "760429072156459019"))  # channel to point members to after verification
@@ -106,7 +107,6 @@ ONBOARDING_ROLE = int(load_env("ONBOARDING_ROLE", "1015975563250372698"))  # mem
 # date after which members need to be joined so that the bot will capture their not pending but role-less existence
 _NOT_BEFORE = load_env("NOT_BEFORE", "25.08.2021")
 NOT_BEFORE = datetime.strptime(_NOT_BEFORE, "%d.%m.%Y")
-
 CHECK_PERIOD = int(load_env("CHECK_PERIOD", "5"))
 
 # rough sanity check if roles were given

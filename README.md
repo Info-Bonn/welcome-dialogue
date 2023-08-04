@@ -65,6 +65,7 @@ This will only be an issue if your bot reaches more than 100 servers, then you'v
 | `export NOT_BEFORE="25.08.2021"`  | Members joined before that date won't be captured by verification check task |
 | `export OWNER_NAME="unknwon"` | Name of the bot owner | |
 | `export OWNER_ID="100000000000000000"` | ID of the bot owner |
+| `export EXTRA_INFO=""`                             | Additional information that shall be displayed in the welcome message        |
 
 The shown values are the default values that will be loaded if nothing else is specified.  
 Expressions like `{PREFIX}` will be replaced by during loading the variable and can be used in specified env variables.

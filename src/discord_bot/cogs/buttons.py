@@ -5,7 +5,7 @@ import discord
 import discord.errors as discord_errors
 from discord.ext import commands
 
-from ..environment import GUILD, ROLES, ONBOARDING_ROLE, START_CHANNEL, ROLE_OPTION_FILE
+from ..environment import GUILD, ROLES, ONBOARDING_ROLE, START_CHANNEL, ROLE_OPTION_FILE, EXTRA_INFO
 from ..log_setup import logger
 
 """
@@ -126,7 +126,8 @@ class OnboardingButtons(discord.ui.View):
         if default_roles and onboarding_role in member.roles:
             selected_roles.extend(guild.get_role(role) for role in default_roles)
             update_message = (f"Du bist nun freigeschaltet! - "
-                              f"Schau doch mal in {guild.get_channel(START_CHANNEL).mention} vorbei :)")
+                              f"Schau doch mal in {guild.get_channel(START_CHANNEL).mention} vorbei :)\n"
+                              f"{EXTRA_INFO}")
             reason = "First time onboarding"
             # remove onboarding
             await member.remove_roles(onboarding_role, reason=reason)
