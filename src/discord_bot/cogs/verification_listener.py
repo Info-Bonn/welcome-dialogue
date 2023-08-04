@@ -61,6 +61,9 @@ class VerificationListener(commands.Cog):
             return
 
         if before_member.pending and not after_member.pending:
+            # TODO: maybe merge these two messages together to save api calls and make bot less annoying?
+            #  thing why it's two messages:
+            #  the first one is personalized the second one is generic and sent to the server too
             await after_member.send(self.get_welcome_text(after_member))
 
             # send message containing the selection buttons - this is a new message on purpose
@@ -73,7 +76,7 @@ class VerificationListener(commands.Cog):
 
     @tasks.loop(minutes=CHECK_PERIOD)
     async def walk_members(self):
-        """ Walk all members every five minutes to fix errors that may occur due to downtimes or other errors """
+        """ Walk all members every n minutes to fix errors that may occur due to downtimes or other errors """
         logger.info("Executing member check")
         i = 0
         j = 0
@@ -84,6 +87,7 @@ class VerificationListener(commands.Cog):
             if len(member.roles) == 1 and not member.pending and member.joined_at.replace(tzinfo=None) > NOT_BEFORE:
                 # set user in onboarding mode
                 await member.add_roles(self.onboarding_role)
+                # TODO: if done above simplify message here too
                 # also send welcome and
                 await member.send(self.get_welcome_text(member))
                 # also sending the buttons
@@ -119,8 +123,7 @@ class VerificationListener(commands.Cog):
 
     def get_welcome_text(self, member: discord.Member):
         return (f"Hey {member.display_name}, willkommen auf dem _{self.guild.name}_ Discord!\n"
-                f"Schau für eine kurze Übersicht über den Server gerne mal in "
-                f"{self.guild.get_channel(START_CHANNEL).mention} vorbei.\n"
+                f"\n"
                 "Bei Fragen kannst du dich jederzeit an uns wenden,\n"
                 "~Die Serverleitung")
 

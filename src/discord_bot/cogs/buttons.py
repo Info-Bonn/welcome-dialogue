@@ -129,7 +129,7 @@ class OnboardingButtons(discord.ui.View):
         onboarding_role = guild.get_role(ONBOARDING_ROLE)  # role that member only has during onboarding
         if default_roles and onboarding_role in member.roles:
             selected_roles.extend(guild.get_role(role) for role in default_roles)
-            update_message = (f"Du bist nun freigeschaltet! - "
+            update_message = (f"Du bist nun freigeschaltet\n"
                               f"Schau doch mal in {guild.get_channel(START_CHANNEL).mention} vorbei :)\n"
                               f"{EXTRA_INFO}")
             reason = "First time onboarding"
