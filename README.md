@@ -52,20 +52,20 @@ But I'd suggest using them all for the beginning, especially if you're relativel
 This will only be an issue if your bot reaches more than 100 servers, then you've got to apply for those intents. 
 
 #### Optional env variables
-| parameter |  description |
-| ------ |  ------ |  
-| `export ROLES="760434164146634752"`  | Roles to give after verification, separated by a space |
-| `export ROLE_OPTION_FILE="data/role_buttons.json"`| Roles to give after verification, separated by a space |
-| `export GUILD="760421261649248296"`  | Guild the bot shall be set up for |
-| `export START_CHANNEL="760429072156459019"`  | Channel the bot mentions in welcome message |
-| `export ONBOARDING_CHANNEL="1015975768045670501"` | Channel for interaction buttons on guild |
-| `export ONBOARDING_ROLE="1015975563250372698"` | Role member has only during onboarding 
-| `export PREFIX="b!"`  | Command prefix |
-| `export CHECK_PERIOD="5"` | Time between two checks for missed members |
-| `export NOT_BEFORE="25.08.2021"`  | Members joined before that date won't be captured by verification check task |
-| `export OWNER_NAME="unknwon"` | Name of the bot owner | |
-| `export OWNER_ID="100000000000000000"` | ID of the bot owner |
+| parameter                                          | description                                                                  |
+|----------------------------------------------------|------------------------------------------------------------------------------|  
+| `export ROLES="760434164146634752"`                | Roles to give after verification, separated by a space                       |
+| `export ROLE_OPTION_FILE="data/role_buttons.json"` | Roles to give after verification, separated by a space                       |
+| `export GUILD="760421261649248296"`                | Guild the bot shall be set up for                                            |
+| `export START_CHANNEL="760429072156459019"`        | Channel the bot mentions in welcome message                                  |
 | `export EXTRA_INFO=""`                             | Additional information that shall be displayed in the welcome message        |
+| `export ONBOARDING_CHANNEL="1015975768045670501"`  | Channel for interaction buttons on guild                                     |
+| `export ONBOARDING_ROLE="1015975563250372698"`     | Role member has only during onboarding                                       |
+| `export PREFIX="b!"`                               | Command prefix                                                               |
+| `export CHECK_PERIOD="5"`                          | Time between two checks for missed members                                   |
+| `export NOT_BEFORE="25.08.2021"`                   | Members joined before that date won't be captured by verification check task |
+| `export OWNER_NAME="unknwon"`                      | Name of the bot owner                                                        | |
+| `export OWNER_ID="100000000000000000"`             | ID of the bot owner                                                          |
 
 The shown values are the default values that will be loaded if nothing else is specified.  
 Expressions like `{PREFIX}` will be replaced by during loading the variable and can be used in specified env variables.
