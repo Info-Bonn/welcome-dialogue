@@ -114,7 +114,7 @@ class OnboardingButtons(discord.ui.View):
 
         # we don't have much time to react to that interaction,
         # so we better just acknowledge it straight ahead and send a followup when the roles are done
-        await interaction.response.defer(ephemeral=True, thinking=True)
+        await interaction.response.defer(ephemeral=False, thinking=True)
 
         # generate list of roles to give
         available_roles = [guild.get_role(button.role_id)
