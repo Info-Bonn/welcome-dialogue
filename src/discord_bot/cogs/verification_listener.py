@@ -124,7 +124,7 @@ class VerificationListener(commands.Cog):
     def get_welcome_text(self, member: discord.Member):
         return (f"Hey {member.display_name}, willkommen auf dem _{self.guild.name}_ Discord!\n"
                 f"\n"
-                "Bei Fragen kannst du dich jederzeit an uns wenden,\n"
+                "Bei Fragen kannst du dich jederzeit an uns wenden.\n"
                 "~Die Serverleitung")
 
 
